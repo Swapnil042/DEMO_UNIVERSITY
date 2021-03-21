@@ -4,6 +4,7 @@ const router = express.Router();
 const db = require('../db');
 const auth = require('../middleware/auth');
 
+//create a course
 router.post('/course', auth, async(req,res)=>{
     const {course_id, course_title, course_description, course_price, course_rating} = req.body;
     if(!course_title || !course_description || !course_price || !course_rating || !course_id){
@@ -14,15 +15,18 @@ router.post('/course', auth, async(req,res)=>{
         if(courseWithId.rows.length){
             return res.status(422).json({error: "Course already exits with this ID. You could update that!!"});
         }
-        const {rows} = await db.query("INSERT INTO courses (course_id, course_title, course_description, course_price, course_rating, course_created_by_user_id) values($1, $2, $3, $4, $5, $6)",
+        const {rows} = await db.query("INSERT INTO courses (course_id, course_title, course_description, course_price, course_rating," + 
+                                        " course_created_by_user_id) values($1, $2, $3, $4, $5, $6)",
                                         [course_id, course_title, course_description, course_price, course_rating, req.currentUser.user_id]);
 
         res.status(200).json({message: "Course Created Successfully", course: rows[0] });
     }catch(err){
+        console.log(err);
         res.status(500).json({error: "Some Error occured !! Please Check all of your Inputs"});
     }
 });
 
+//get all courses
 router.get('/course', auth, async(req, res)=>{
     try{
         const{rows} = await db.query("SELECT c.course_id, c.course_title, c.course_description, c.course_price, c.course_rating," +
@@ -39,9 +43,10 @@ router.get('/course', auth, async(req, res)=>{
     }
 });
 
+//get a course
 router.get('/course/:id', auth, async(req,res)=>{
     try{
-        const {rows} = await db.query("SELECT * FROM courses where course_id = $1", [req.params.id]);
+        const {rows} = await db.query("SELECT course_id, course_title, course_description, course_price, course_rating FROM courses where course_id = $1", [req.params.id]);
         if(!rows.length){
             return res.status(404).json({error: "Course Not Found"});
         }
@@ -51,6 +56,7 @@ router.get('/course/:id', auth, async(req,res)=>{
     }
 });
 
+//update a course
 router.patch('/course/:id', auth, async(req, res)=>{
     const {course_id, course_title, course_description, course_price, course_rating} = req.body;
     if(!course_title || !course_description || !course_price || !course_rating || !course_id){
@@ -63,9 +69,12 @@ router.patch('/course/:id', auth, async(req, res)=>{
                 return res.status(422).send({error: "There is a course with this ID !!"});
             }
         }
-        const course = await db.query('UPDATE courses SET course_id = $1, course_title = $2, course_description = $3, course_price = $4, course_rating = $5, course_updated_by_user_id = $6 WHERE course_id = $7 returning *',
-                        [course_id, course_title, course_description, course_price, course_rating, req.currentUser.user_id, req.params.id]);
-
+        const {rows} = await db.query("UPDATE courses SET course_id = $1, course_title = $2, course_description = $3, course_price = $4,"+
+                                    " course_rating = $5, course_updated_by_user_id = $6 WHERE course_id = $7 RETURNING *",
+                                    [course_id, course_title, course_description, course_price, course_rating, req.currentUser.user_id, req.params.id]);
+        if(!rows.length){
+            return res.status(404).json({error: "Course Not Found !! Couldn't Update"});
+        }
         res.status(200).json({message: "Course Updated Successfully"}); 
     }catch(err){
         console.log(err);

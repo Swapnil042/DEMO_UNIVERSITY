@@ -6,31 +6,39 @@ const jwt = require('jsonwebtoken');
 const db = require('../db');
 const auth = require('../middleware/auth');
 
+//signup/create
 router.post('/signup', async(req, res)=>{
-    const {user_id ,first_name, last_name, email, password} = req.body;
+    const {first_name, last_name, email, password} = req.body;
 
-    if(!user_id || !first_name || !last_name || !email || !password){
+    const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+    isValid = pattern.test( email );
+
+    if(!isValid){
+        return res.status(422).json({error: "INVALID EMAIL !!"});
+    }
+
+    if(!first_name || !last_name || !email || !password){
         return res.status(422).json({error: "Please add all fields"});
     }
     try{
-        const userWithId = await db.query("SELECT * from users where user_id = $1",[user_id]);
-        if(userWithId.rows.length){
-            return res.status(422).json({error: "User Exists With This ID !!!"});
-        }
         const userWithEmail = await db.query("SELECT * from users where email = $1",[email]);
         if(userWithEmail.rows.length){
             return res.status(422).json({error: "User Exists With This Email !!!"});
         }
 
         const hashedPass = await bcrypt.hash(password, 8);
-        const newUser = await db.query("INSERT INTO users (user_id, first_name, last_name, email, password) values ($1, $2, $3, $4, $5)", 
-                        [user_id, first_name, last_name, email, hashedPass ]);
+        const {rows} = await db.query("INSERT INTO users (first_name, last_name, email, password) values ($1, $2, $3, $4) RETURNING *", 
+                        [first_name, last_name, email, hashedPass]);
+        if(!rows.length){
+            return res.status(422).json({error: "Some Error occured !! Please Check all of your Inputs"});
+        }
         res.status(200).json({message: "User Created Successfully"});
     }catch(err){
         return res.status(422).json({error: "Some Error occured !! Please Check all of your Inputs"});
     }
 });
 
+//login
 router.post('/signin', async(req,res)=>{
     const {email, password} = req.body;
     if(!email || !password){
@@ -55,6 +63,7 @@ router.post('/signin', async(req,res)=>{
     }
 });
 
+//get a user
 router.get('/user/:id', auth, async(req,res)=>{
     const id = req.params.id;
     try{
@@ -68,6 +77,7 @@ router.get('/user/:id', auth, async(req,res)=>{
     }
 });
 
+//get all users
 router.get('/alluser', auth, async(req, res)=>{
     try{
         const {rows} = await db.query("SELECT user_id, first_name, last_name, email FROM users");

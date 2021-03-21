@@ -4,6 +4,7 @@ const router = express.Router();
 const db = require('../db');
 const auth = require('../middleware/auth');
 
+//create a student
 router.post('/student', auth, async(req, res)=>{
     const {name,
         student_id,
@@ -34,8 +35,8 @@ router.post('/student', auth, async(req, res)=>{
             return res.status(422).json({error: "Student already exits with this Email !!"});
         }
 
-        const {rows} = await db.query("INSERT INTO students (student_id, name, grade_level, university_name, phone_number, email, address, city, country, student_created_by_user_id)"+
-                                    " values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *",
+        const {rows} = await db.query("INSERT INTO students (student_id, name, grade_level, university_name, phone_number, email, address, city, "+
+                                    "country, student_created_by_user_id) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *",
                                     [student_id, name, grade_level, university_name, phone_number, email, address, city, country,  req.currentUser.user_id]);
         if(!rows.length){
             return res.status(500).json({error: "Some Error occured"});
@@ -46,6 +47,7 @@ router.post('/student', auth, async(req, res)=>{
     }
 });
 
+//update a student
 router.patch('/student/:id', auth, async(req, res)=>{
     const {name,
         student_id,
@@ -66,18 +68,22 @@ router.patch('/student/:id', auth, async(req, res)=>{
         return res.status(422).json({error: "Please add all fields"});
     }
     try{
+        const check = await db.query("SELECT * FROM students WHERE student_id = $1",[req.params.id]);
+        if(!check.rows.length){
+            return res.status(404).json({error: "No Student Found"});
+        }
         if(parseInt(req.params.id) !== student_id){
             const {rows} = await db.query("SELECT * FROM students WHERE student_id = $1",[student_id]);
             if(rows.length){
                 return res.status(422).json({error: "Another student already exits with this ID !!"});
             }
         }
-        
         const {rows} = await db.query("SELECT * FROM students WHERE email = $1",[email]);
         if(rows.length){
-            return res.status(422).json({error: "Another student already exits with this Email !!"});
+            if(rows[0].student_id !== parseInt(req.params.id) ){
+                return res.status(422).json({error: "Another student already exits with this Email !!"});
+            }
         }
-
         const newStudent = await db.query("UPDATE students SET student_id = $1, name = $2, grade_level = $3, university_name = $4, "+
                                     " phone_number = $5, email = $6, address = $7, city = $8, country = $9, "+
                                     " student_updated_by_user_id = $10 WHERE student_id = $11 RETURNING *",
@@ -92,6 +98,7 @@ router.patch('/student/:id', auth, async(req, res)=>{
     }
 });
 
+//get all students
 router.get('/student', auth, async(req, res)=>{
     try{
         const {rows} = await db.query("SELECT s.student_id, s.name, s.grade_level, s.university_name, s.phone_number, s.email, "+
@@ -101,14 +108,15 @@ router.get('/student', auth, async(req, res)=>{
                                     "LEFT JOIN users updt ON s.student_updated_by_user_id = updt.user_id" );
                                     
         if(!rows.length){
-                return res.status(404).json({error: "No Course Found"});
-            }
+            return res.status(404).json({error: "No Student Found"});
+        }
         res.status(200).json({students: rows});
     }catch(err){
         res.status(500).json({error: "Some Error occured"});
     }
 });
 
+//get a student
 router.get('/student/:id', auth, async(req, res)=>{
     try{
         const {rows} = await db.query("SELECT * FROM students where student_id = $1", [req.params.id]);
