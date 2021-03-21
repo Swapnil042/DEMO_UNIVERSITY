@@ -20,7 +20,7 @@ module.exports = (req,res,next)=>{
                 return res.status(401).json({error:"Please authenticate"});
             }
             req.currentUser = userdata.rows[0];
-            console.log(req.currentUser);
+            // console.log(req.currentUser);
             next()
         }).catch(e=>{
             res.status(401).json(e)
