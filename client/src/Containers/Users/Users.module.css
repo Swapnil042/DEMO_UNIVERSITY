@@ -1,0 +1,20 @@
+.user{
+    margin: auto;
+    max-width: 70%; 
+    height: 100%;
+    border: 2px solid grey; 
+    border-radius: 5px; 
+    padding: 10px;
+    margin-top: 30px;
+}
+
+@media (min-width: 900px) and (min-height: 400px) {
+  .user {
+      max-width: 900px;
+  }
+}
+
+.error{
+  color: red;
+  text-align: center
+}

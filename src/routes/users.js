@@ -10,15 +10,13 @@ const auth = require('../middleware/auth');
 router.post('/signup', async(req, res)=>{
     const {first_name, last_name, email, password} = req.body;
 
-    const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-    isValid = pattern.test( email );
-
-    if(!isValid){
-        return res.status(422).json({error: "INVALID EMAIL !!"});
-    }
-
     if(!first_name || !last_name || !email || !password){
         return res.status(422).json({error: "Please add all fields"});
+    }
+    const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+    isValid = pattern.test( email );
+    if(!isValid){
+        return res.status(422).json({error: "INVALID EMAIL !!"});
     }
     try{
         const userWithEmail = await db.query("SELECT * from users where email = $1",[email]);
@@ -32,7 +30,7 @@ router.post('/signup', async(req, res)=>{
         if(!rows.length){
             return res.status(422).json({error: "Some Error occured !! Please Check all of your Inputs"});
         }
-        res.status(200).json({message: "User Created Successfully"});
+        res.status(200).json({message: "Account Created Successfully"});
     }catch(err){
         return res.status(422).json({error: "Some Error occured !! Please Check all of your Inputs"});
     }

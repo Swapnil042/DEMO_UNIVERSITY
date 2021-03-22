@@ -1,0 +1,31 @@
+.link{
+    background-color: #520701;
+    color: white;
+    padding: 14px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 5px;
+    margin-right: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+  
+  .link:hover {
+    background-color: rgb(134, 2, 2);
+  }
+
+.nav{
+    margin: auto;
+    max-width: 70%; 
+    border: 2px solid grey; 
+    box-shadow: 5px 5px grey;
+    border-radius: 5px; 
+    padding: 10px;
+}
+
+@media (min-width: 900px) and (min-height: 400px) {
+  .nav {
+      max-width: 900px;
+  }
+}

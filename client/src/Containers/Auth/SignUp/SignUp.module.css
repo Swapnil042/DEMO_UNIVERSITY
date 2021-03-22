@@ -1,0 +1,39 @@
+.button {
+    transition-duration: 0.2s;
+    width: 200px;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    margin-top: 20px;
+  }
+  
+  .button:hover {
+    background-color: grey; 
+    color: white;
+  }
+
+.invalid{
+  color: #f44336;
+}
+
+.success{
+    color: #4CAF50;
+}
+
+.login{
+    cursor: pointer;
+}
+
+.signUp{
+    margin: auto;
+    max-width: 50%; 
+    border: 2px solid grey; 
+    box-shadow: 5px 5px grey;
+    border-radius: 5px; 
+    padding: 20px;
+}
+@media (min-width: 500px) and (min-height: 400px) {
+  .signUp {
+      max-width: 500px;
+  }
+}
