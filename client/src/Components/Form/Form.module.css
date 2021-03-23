@@ -1,0 +1,73 @@
+.mainForm{
+    margin: auto;
+    max-width: 70%; 
+    height: 100%;
+    border: 2px solid grey; 
+    border-radius: 5px; 
+    padding: 10px;
+    margin-top: 30px;
+  }
+@media (min-width: 900px) and (min-height: 400px) {
+    .mainForm {
+        max-width: 900px;
+    }
+  }
+.innerForm{
+    margin: auto;
+    max-width: 60%; 
+    border: 2px solid grey; 
+    padding: 10px;
+    margin-top: 30px; 
+}  
+.error{
+    color: red;
+    text-align: left;
+    margin-top: 5px;
+}
+.button {
+    transition-duration: 0.2s;
+    width: 110px;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    margin-top: 20px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .button:hover {
+    background-color:#4CAF50; 
+    color: white;
+  }
+
+
+.backButton {
+    transition-duration: 0.2s;
+    width: 100px;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .backButton:hover {
+    background-color:#e53935; 
+    color: white;
+  }
+
+.inputDiv{
+    display: flex; 
+    margin-top:20px;
+}
+
+.labelDiv{
+    width: 30%;
+}
+.inDiv{
+    width: 65%;
+}
+
+.text{
+    width: 100%;
+}

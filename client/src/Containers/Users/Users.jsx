@@ -30,13 +30,17 @@ const Users = (props)=>{
         })
     },[]);
 
-    let userTable = <UserTable allusers={users}/>
+    let userTable = null;
+    if(error === ''){
+        userTable = <UserTable allusers={users}/>
+    }
     if(loader){
         userTable = <Loader/>
     }
 
     return(
         <div className={classes.user}>
+            <h3>Users :</h3>
             {error !== '' ? <p className={classes.error}>{error}</p> : <>{userTable}</> }
         </div>
     )

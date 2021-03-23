@@ -85,4 +85,8 @@ router.get('/alluser', auth, async(req, res)=>{
     }
 })
 
+router.post('/autologin', auth, async(req, res)=>{
+    res.status(200).json({user: req.currentUser})
+});
+
 module.exports = router;

@@ -1,0 +1,36 @@
+.course{
+  margin: auto;
+  max-width: 70%; 
+  height: 100%;
+  border: 2px solid grey; 
+  border-radius: 5px; 
+  padding: 10px;
+  margin-top: 30px;
+}
+
+
+@media (min-width: 900px) and (min-height: 400px) {
+  .course {
+      max-width: 900px;
+  }
+}
+
+.error{
+  color: red;
+  text-align: center
+}
+
+.button {
+  transition-duration: 0.2s;
+  width: 100px;
+  padding: 5px;
+  border: none;
+  border-radius: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.button:hover {
+  background-color:#4CAF50; 
+  color: white;
+}

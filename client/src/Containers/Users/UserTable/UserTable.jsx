@@ -17,7 +17,7 @@ const UserTable=(props)=> {
             <TableCell><b>First Name</b></TableCell>
             <TableCell><b>Last Name</b></TableCell>
             <TableCell><b>Email</b></TableCell>
-            <TableCell><b>Action</b></TableCell>
+            <TableCell><b>User Id</b></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -26,9 +26,7 @@ const UserTable=(props)=> {
               <TableCell component="th" scope="row">{user.first_name}</TableCell>
               <TableCell align="left">{user.last_name}</TableCell>
               <TableCell align="left">{user.email}</TableCell>
-              <TableCell align="left">
-                  <button className={classes.button}>Edit</button>
-              </TableCell>
+              <TableCell align="left">{user.user_id}</TableCell>
             </TableRow>
           ))}
         </TableBody>

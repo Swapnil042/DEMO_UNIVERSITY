@@ -1,0 +1,90 @@
+CREATE TABLE users (
+	id serial,
+	user_id INT PRIMARY KEY,
+	first_name VARCHAR ( 20 ) NOT NULL,
+	last_name VARCHAR ( 20 ) NOT NULL,
+	email VARCHAR ( 255 ) UNIQUE NOT NULL,
+	password VARCHAR ( 255 ) NOT NULL 
+);
+
+CREATE TABLE courses (
+	id serial,
+	course_id INT PRIMARY KEY,
+	course_title VARCHAR ( 255 ) NOT NULL,
+	course_description VARCHAR ( 255 ) NOT NULL,
+	course_price NUMERIC NOT NULL,
+	course_rating INT NOT NULL CHECK (course_rating >=1 AND course_rating <=5),
+	course_created_by_user_id INT NOT NULL,
+	course_updated_by_user_id INT 
+);
+
+CREATE TABLE students(
+	id serial,
+	student_id INT PRIMARY KEY,
+	name VARCHAR (255) NOT NULL,
+	grade_level VARCHAR(255) NOT NULL,
+	university_name VARCHAR(255) NOT NULL,
+	phone_number INT NOT NULL,
+	email VARCHAR(255) UNIQUE NOT NULL,
+	address VARCHAR(255) NOT NULL,
+	city VARCHAR(255) NOT NULL,
+	country VARCHAR(255) NOT NULL,
+	student_created_by_user_id INT NOT NULL,
+	student_updated_by_user_id INT
+);
+
+
+//all course information
+SELECT 
+	c.course_id, 
+	c.course_title, 
+	c.course_description, 
+	c.course_price, 
+	c.course_rating, 
+	crt.first_name AS created_by_first_name, 
+	crt.last_name AS created_by_last_name, 
+	updt.first_name AS updated_by_first_name, 
+	updt.last_name AS updated_by_last_name 
+FROM 
+	(courses c 
+	INNER JOIN 
+	users crt 
+	ON 
+	c.course_created_by_user_id = crt.user_id)
+LEFT JOIN 
+	users updt 
+	ON 
+	c.course_updated_by_user_id = updt.user_id;
+
+
+//all student information
+SELECT 
+	s.student_id, 
+	s.name, 
+	s.grade_level,
+	s.university_name,
+	s.phone_number,
+	s.email,
+	s.address,
+	s.city,
+	s.country,
+	crt.first_name AS created_by_first_name, 
+	crt.last_name AS created_by_last_name, 
+	updt.first_name AS updated_by_first_name, 
+	updt.last_name AS updated_by_last_name 
+FROM 
+	(students s 
+	INNER JOIN 
+	users crt 
+	ON 
+	s.student_created_by_user_id = crt.user_id)
+LEFT JOIN 
+	users updt 
+	ON 
+	s.student_updated_by_user_id = updt.user_id;
+
+
+
+
+
+

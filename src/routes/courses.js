@@ -19,7 +19,7 @@ router.post('/course', auth, async(req,res)=>{
                                         " course_created_by_user_id) values($1, $2, $3, $4, $5, $6)",
                                         [course_id, course_title, course_description, course_price, course_rating, req.currentUser.user_id]);
 
-        res.status(200).json({message: "Course Created Successfully", course: rows[0] });
+        res.status(200).json({message: "Course Added Successfully", course: rows[0] });
     }catch(err){
         console.log(err);
         res.status(500).json({error: "Some Error occured !! Please Check all of your Inputs"});
@@ -46,11 +46,11 @@ router.get('/course', auth, async(req, res)=>{
 //get a course
 router.get('/course/:id', auth, async(req,res)=>{
     try{
-        const {rows} = await db.query("SELECT course_id, course_title, course_description, course_price, course_rating FROM courses where course_id = $1", [req.params.id]);
+        const {rows} = await db.query("SELECT course_id, course_title, course_description, course_price, course_rating FROM courses where course_id = $1", [parseInt(req.params.id)]);
         if(!rows.length){
             return res.status(404).json({error: "Course Not Found"});
         }
-        res.status(422).json(rows[0]);
+        res.status(200).json(rows[0]);
     }catch(err){
         res.status(500).json({error: "Some Error occured"});
     }
@@ -77,7 +77,7 @@ router.patch('/course/:id', auth, async(req, res)=>{
         }
         res.status(200).json({message: "Course Updated Successfully"}); 
     }catch(err){
-        console.log(err);
+        res.status(422).send({error: "Error Occured !!"});
     }
    
 });

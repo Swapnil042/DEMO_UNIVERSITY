@@ -37,3 +37,15 @@
       max-width: 500px;
   }
 }
+
+.inputDiv{
+  display: flex; 
+  margin-top:20px;
+}
+
+.labelDiv{
+  width: 30%;
+}
+.inDiv{
+  width: 65%;
+}

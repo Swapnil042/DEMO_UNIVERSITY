@@ -119,11 +119,11 @@ router.get('/student', auth, async(req, res)=>{
 //get a student
 router.get('/student/:id', auth, async(req, res)=>{
     try{
-        const {rows} = await db.query("SELECT * FROM students where student_id = $1", [req.params.id]);
+        const {rows} = await db.query("SELECT * FROM students where student_id = $1", [parseInt(req.params.id)]);
         if(!rows.length){
             return res.status(404).json({error: "Student Not Found"});
         }
-        res.status(422).json(rows[0]);
+        res.status(200).json(rows[0]);
     }catch(err){
         console.log(err);
         res.status(500).json({error: "Some Error occured"});
